@@ -1,0 +1,1 @@
+"""Tesseract Backend Application"""
