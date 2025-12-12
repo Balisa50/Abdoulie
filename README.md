@@ -2,6 +2,8 @@
 
 A modern, full-stack SaaS application built with FastAPI, Next.js, and a comprehensive cloud infrastructure stack.
 
+**Business Focus:** Autonomous Freight Audit & Recovery Platform for mid-market manufacturers and distributors. See the complete [Freight Audit Blueprint](docs/FREIGHT_AUDIT_BLUEPRINT.md) for business strategy, technical architecture, and go-to-market plan.
+
 ## 🏗️ Architecture
 
 This is a monorepo containing all components of the Tesseract SaaS platform:
