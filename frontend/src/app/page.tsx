@@ -1,110 +1,67 @@
-"use client";
+import type { Metadata } from "next";
+import Link from "next/link";
 
-import { useEffect, useState } from "react";
+import { HealthCard } from "@/components/HealthCard";
+import { getPublicApiBaseUrl } from "@/lib/api";
 
-interface HealthResponse {
-  status: string;
-  app: string;
-  version: string;
-  timestamp: string;
-}
+export const metadata: Metadata = {
+  title: "Home | Tesseract",
+  description: "Tesseract SaaS MVP frontend.",
+};
 
-export default function Home() {
-  const [health, setHealth] = useState<HealthResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchHealth = async () => {
-      try {
-        const response = await fetch(
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/health"
-        );
-        const data = await response.json();
-        setHealth(data);
-      } catch (err) {
-        setError("Failed to connect to backend");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHealth();
-  }, []);
+export default function HomePage() {
+  const apiBaseUrl = getPublicApiBaseUrl();
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
-      <main className="flex flex-col items-center gap-8 text-center">
-        <h1 className="text-6xl font-bold text-gray-900">
-          Tesseract <span className="text-indigo-600">SaaS</span>
-        </h1>
-        <p className="text-xl text-gray-600 max-w-2xl">
-          Welcome to the Tesseract SaaS MVP - A modern full-stack application
-          built with Next.js and FastAPI
-        </p>
+    <div className="mx-auto w-full max-w-6xl px-6 py-14">
+      <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-2">
+        <section>
+          <h1 className="text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+            Tesseract SaaS MVP
+          </h1>
+          <p className="mt-4 text-lg text-gray-600">
+            Next.js frontend scaffolded with Tailwind and ready to be wired to the
+            FastAPI backend.
+          </p>
 
-        <div className="mt-8 p-6 bg-white rounded-lg shadow-lg max-w-md w-full">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">
-            Backend Status
-          </h2>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Link
+              href="/dashboard"
+              className="rounded-md bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
+            >
+              Open dashboard
+            </Link>
+            <a
+              href={`${apiBaseUrl}/docs`}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-md border border-black/10 bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 hover:bg-black/5"
+            >
+              Backend API docs
+            </a>
+          </div>
 
-          {loading && (
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+          <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="rounded-xl border border-black/10 bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-semibold text-gray-900">Scaffolded pages</h2>
+              <p className="mt-1 text-sm text-gray-600">
+                Clients, invoices, contracts, and audits are stubbed and ready
+                for API integration.
+              </p>
             </div>
-          )}
-
-          {error && (
-            <div className="text-red-600">
-              <p className="font-semibold">⚠️ {error}</p>
-              <p className="text-sm mt-2">Make sure the backend is running</p>
+            <div className="rounded-xl border border-black/10 bg-white p-5 shadow-sm">
+              <h2 className="text-sm font-semibold text-gray-900">API helper</h2>
+              <p className="mt-1 text-sm text-gray-600">
+                A small typed fetch wrapper centralizes base URL handling.
+              </p>
             </div>
-          )}
+          </div>
+        </section>
 
-          {health && (
-            <div className="space-y-2 text-left">
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Status:</span>
-                <span className="text-green-600">✓ {health.status}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">App:</span>
-                <span className="text-gray-600">{health.app}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Version:</span>
-                <span className="text-gray-600">{health.version}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-gray-700">Timestamp:</span>
-                <span className="text-gray-600 text-sm">
-                  {new Date(health.timestamp).toLocaleString()}
-                </span>
-              </div>
-            </div>
-          )}
+        <div className="md:pt-3">
+          <HealthCard />
         </div>
-
-        <div className="mt-8 flex gap-4">
-          <a
-            href="http://localhost:8000/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
-          >
-            API Docs
-          </a>
-          <a
-            href="https://nextjs.org/docs"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors font-semibold"
-          >
-            Next.js Docs
-          </a>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
