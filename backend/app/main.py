@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 
-from app.routers import health, invoice
+from app.routers import audit_results, clients, contracts, health, invoices, invoice
 from app.security import RateLimitMiddleware, SecurityHeadersMiddleware
 from app.settings import settings
 
@@ -105,6 +105,10 @@ def create_app() -> FastAPI:
     # Include routers
     app.include_router(health.router)
     app.include_router(invoice.router)
+    app.include_router(invoices.router)
+    app.include_router(clients.router)
+    app.include_router(contracts.router)
+    app.include_router(audit_results.router)
 
     return app
 
