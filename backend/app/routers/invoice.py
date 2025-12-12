@@ -3,15 +3,21 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from pydantic import BaseModel, Field
 
 from app.audit_engine import AuditEngine
 from app.document_processor import DocumentProcessor
+from app.security import validate_file_upload, verify_api_key
+from app.settings import settings
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/invoice", tags=["invoice"])
+router = APIRouter(
+    prefix="/invoice",
+    tags=["invoice"],
+    dependencies=[Depends(verify_api_key)] if settings.require_api_key else [],
+)
 
 
 class ExtractResponse(BaseModel):
@@ -78,17 +84,30 @@ async def extract_invoice(file: UploadFile = File(...)) -> ExtractResponse:
     - shipment_reference
 
     Uses hybrid extraction: direct text extraction with OCR fallback.
+
+    Security: Requires API key authentication (if enabled).
     """
     logger.info(f"Received file upload: {file.filename}")
 
-    # Validate file type
+    # Validate file upload
+    validate_file_upload(file.filename, file.content_type, settings.max_upload_size)
+
+    # Additional file type validation
     if not file.filename or not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="File must be a PDF")
 
+    tmp_path = None
     try:
+        # Read file content with size limit
+        content = await file.read(settings.max_upload_size + 1)
+        if len(content) > settings.max_upload_size:
+            raise HTTPException(
+                status_code=413,
+                detail=f"File size exceeds maximum allowed size of {settings.max_upload_size / (1024 * 1024):.1f}MB",
+            )
+
         # Save uploaded file to temporary location
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-            content = await file.read()
             tmp_file.write(content)
             tmp_path = tmp_file.name
 
@@ -113,14 +132,19 @@ async def extract_invoice(file: UploadFile = File(...)) -> ExtractResponse:
             success=True, data=extracted_data, message="Invoice data extracted successfully"
         )
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error processing invoice: {e}", exc_info=True)
         # Clean up temporary file on error
-        try:
-            Path(tmp_path).unlink(missing_ok=True)
-        except Exception:
-            pass
+        if tmp_path:
+            try:
+                Path(tmp_path).unlink(missing_ok=True)
+            except Exception:
+                pass
 
+        if settings.is_production and not settings.debug:
+            raise HTTPException(status_code=500, detail="Error processing invoice")
         raise HTTPException(status_code=500, detail=f"Error processing invoice: {str(e)}")
 
 
