@@ -13,6 +13,11 @@ Welcome to the Tesseract SaaS MVP documentation.
 - [Development Guide](DEVELOPMENT.md) - Detailed development workflow
 - [Architecture](ARCHITECTURE.md) - System architecture and design
 - [API Documentation](API.md) - API endpoints and usage
+- [Database Schema](DATABASE_SCHEMA.md) - Database design and models
+
+### Business & Product
+- [Freight Audit Blueprint](FREIGHT_AUDIT_BLUEPRINT.md) - Complete business and technical blueprint for the Autonomous Freight Audit & Recovery Platform
+- [Implementation Status](IMPLEMENTATION_STATUS.md) - Current implementation progress and roadmap tracking
 
 ### Contributing
 - [Contributing Guidelines](../CONTRIBUTING.md) - How to contribute
