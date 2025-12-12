@@ -1,0 +1,65 @@
+## Database Migrations with Alembic
+
+This directory contains Alembic migrations for the Tesseract SaaS MVP backend.
+
+### Quick Start
+
+#### Apply Migrations
+
+To apply all pending migrations:
+
+```bash
+cd /home/engine/project/backend
+alembic upgrade head
+```
+
+#### Create New Migration
+
+To create a new migration after modifying models:
+
+```bash
+alembic revision --autogenerate -m "Description of your changes"
+```
+
+Note: The application requires a running PostgreSQL database. Set the `DATABASE_URL` environment variable or ensure the default connection string is correct.
+
+#### Rollback Migration
+
+To rollback to a specific revision:
+
+```bash
+alembic downgrade <revision_id>
+```
+
+To rollback one migration:
+
+```bash
+alembic downgrade -1
+```
+
+### Current Schema
+
+The initial migration (001_create_initial_schema.py) creates the following tables:
+
+- **clients**: Core client information with metadata
+- **invoices**: Invoice data with client associations and extracted entities
+- **contracts**: Contract information with rule references
+- **audit_results**: Audit results with variance metrics and findings
+- **audit_logs**: Audit trail for all entity changes
+
+### Key Features
+
+- All tables include UUID primary keys
+- JSONB columns for flexible data storage
+- Comprehensive indexing on frequently queried columns (client_id, status, dates)
+- Cascade delete relationships to maintain referential integrity
+- Timestamp tracking (created_at, updated_at) on all entity tables
+- Support for duplicate detection via hash fields
+
+### Database Configuration
+
+The database configuration is loaded from `app/settings.py` and supports:
+
+- PostgreSQL with asyncpg driver
+- Environment variable: `DATABASE_URL`
+- Default: `postgresql+asyncpg://tesseract:tesseract@postgres:5432/tesseract`
