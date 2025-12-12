@@ -103,3 +103,7 @@ Thumbs.db
 
 # LocalStack
 .localstack/
+
+# Test artifacts
+sample_invoice*.pdf
+*.pdf
