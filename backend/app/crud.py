@@ -60,7 +60,7 @@ class CRUDBase(Generic[ModelType]):
         """Delete object."""
         db_obj = await db.get(self.model, id)
         if db_obj:
-            await db.delete(db_obj)
+            db.delete(db_obj)
             await db.commit()
 
 

@@ -1,5 +1,5 @@
 """API Routers"""
 
-from app.routers import health, invoice
+from app.routers import audit_results, clients, contracts, health, invoice, invoices
 
-__all__ = ["health", "invoice"]
+__all__ = ["health", "invoice", "invoices", "clients", "contracts", "audit_results"]
