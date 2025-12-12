@@ -18,6 +18,7 @@ Welcome to the Tesseract SaaS MVP documentation.
 ### Business & Product
 - [Freight Audit Blueprint](FREIGHT_AUDIT_BLUEPRINT.md) - Complete business and technical blueprint for the Autonomous Freight Audit & Recovery Platform
 - [MVP Feature Set (Component 2)](COMPONENT_2_MVP_FEATURE_SET.md) - Detailed MVP features grouped into Core Workflow and Business Essentials with acceptance criteria
+- [Monetization & GTM (Component 3)](COMPONENT_3_MONETIZATION_GTM.md) - 6-month go-to-market strategy with pricing models, 90-day pilot program, sales deck, and financial projections
 - [Implementation Status](IMPLEMENTATION_STATUS.md) - Current implementation progress and roadmap tracking
 
 ### Contributing
